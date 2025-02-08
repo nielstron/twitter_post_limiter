@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Twitter Post Limiter",
+  "version": "0.2",
+  "description": "Number posts on the Twitter timeline and limit after a set number",
+  "permissions": [
+    "*://twitter.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://twitter.com/home*", "*://x.com/home*"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "48": "icon48.png",
+    "96": "icon96.png"
+  }
+}
