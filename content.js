@@ -1,6 +1,26 @@
 (function () {
 const postIndexMap = new Map();
 let currentIndex = 1;
+let postLimit = 5; // Default value
+
+// Load the post limit from storage
+browser.storage.local.get('postLimit').then(result => {
+  if (result.postLimit) {
+    postLimit = result.postLimit;
+  }
+});
+
+// Listen for storage changes
+browser.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.postLimit) {
+    postLimit = changes.postLimit.newValue;
+    // Reapply numbering to existing posts
+    document.querySelectorAll('article[data-testid="tweet"][data-numbered]').forEach(post => {
+      post.dataset.numbered = false;
+    });
+    numberPosts();
+  }
+});
 
 function numberPosts() {
   const posts = document.querySelectorAll('article[data-testid="tweet"]:not([data-numbered])');
@@ -15,7 +35,7 @@ function numberPosts() {
     const containerDiv = document.createElement('div');
     const numberDiv = document.createElement('div');
     const postIndex = postIndexMap.get(postId);
-    const inTheRed = postIndex > 5;
+    const inTheRed = postIndex > postLimit;
     containerDiv.style.position = 'absolute';
     containerDiv.style.top = '10px';
     containerDiv.style.left = '10px';
